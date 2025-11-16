@@ -5,30 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Collaborative Drive</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- We will use Tailwind classes for icons (simple +, share, download) -->
     <style>
         body { background-color: #1a202c; color: #e2e8f0; }
-        /* Style for the pop-up modal */
         .modal {
-            display: none; /* Hidden by default */
-            position: fixed; z-index: 10; left: 0; top: 0;
-            width: 100%; height: 100%;
-            overflow: auto; background-color: rgba(0,0,0,0.7);
+            display: none; position: fixed; z-index: 10; left: 0; top: 0;
+            width: 100%; height: 100%; overflow: auto; 
+            background-color: rgba(0,0,0,0.7);
             padding-top: 60px;
         }
         .modal-content {
-            background-color: #2d3748; /* bg-gray-800 */
-            margin: 5% auto; padding: 24px;
-            border: 1px solid #4a5568; /* border-gray-600 */
-            width: 90%; max-width: 500px;
-            border-radius: 12px;
-            position: relative;
+            background-color: #2d3748; margin: 5% auto; padding: 24px;
+            border: 1px solid #4a5568; width: 90%; max-width: 500px;
+            border-radius: 12px; position: relative;
         }
         .close-btn {
-            color: #a0aec0; /* text-gray-400 */
-            position: absolute; top: 16px; right: 20px;
-            font-size: 28px; font-weight: bold;
-            cursor: pointer;
+            color: #a0aec0; position: absolute; top: 16px; right: 20px;
+            font-size: 28px; font-weight: bold; cursor: pointer;
         }
         .close-btn:hover { color: #ffffff; }
     </style>
@@ -44,18 +36,12 @@
         <!-- USER 1 PANEL -->
         <div class="bg-gray-800 rounded-xl shadow-2xl p-6 flex flex-col space-y-6">
             <h2 class="text-2xl font-semibold text-white">User 1 Portal (ID: 1)</h2>
-            
-            <!-- Upload Box -->
             <div class="bg-gray-700 p-4 rounded-lg">
                 <h3 class="font-semibold text-lg mb-3">Upload New File</h3>
                 <input class="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600" type="file" id="user1-file-input">
-                <button class="w-full mt-3 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg" onclick="uploadFile(1)">
-                    Upload
-                </button>
+                <button class="w-full mt-3 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg" onclick="uploadFile(1)">Upload</button>
                 <pre id="user1-upload-status" class="mt-2 text-xs"></pre>
             </div>
-
-            <!-- File List -->
             <div>
                 <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg" onclick="listMyFiles(1)">
                     Refresh My Files (User 1)
@@ -69,8 +55,6 @@
         <!-- USER 2 PANEL -->
         <div class="bg-gray-800 rounded-xl shadow-2xl p-6 flex flex-col space-y-6">
             <h2 class="text-2xl font-semibold text-white">User 2 Portal (ID: 2)</h2>
-            
-            <!-- File List -->
             <div>
                 <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg" onclick="listMyFiles(2)">
                     Refresh My Files (User 2)
@@ -82,29 +66,40 @@
         </div>
     </div>
 
-    <!-- SHARE MODAL (Hidden by default) -->
+    <!-- SHARE MODAL (Hidden) -->
     <div id="shareModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <span class="close-btn" onclick="closeModal('shareModal')">&times;</span>
             <h3 class="text-xl font-semibold mb-4">Share File</h3>
-            <p class="text-sm mb-2 text-gray-300">Sharing: <strong id="modal-filename"></strong></p>
-            
-            <input type="hidden" id="modal-file-id">
-            <input type="hidden" id="modal-user-id">
-            
-            <label for="modal-share-target-user" class="block text-sm font-medium text-gray-300">Share with Username</label>
-            <input class="w-full p-2 mt-1 rounded-lg bg-gray-900 border border-gray-600 text-white" type="text" id="modal-share-target-user" placeholder="e.g., user2">
-            
-            <label for="modal-share-access" class="block text-sm font-medium text-gray-300 mt-4">Access Level</label>
-            <select id="modal-share-access" class="w-full p-2 mt-1 rounded-lg bg-gray-900 border border-gray-600 text-white">
+            <p class="text-sm mb-2 text-gray-300">Sharing: <strong id="share-filename"></strong></p>
+            <input type="hidden" id="share-file-id">
+            <input type="hidden" id="share-user-id">
+            <label for="share-target-user" class="block text-sm font-medium text-gray-300">Share with Username</label>
+            <input class="w-full p-2 mt-1 rounded-lg bg-gray-900 border border-gray-600 text-white" type="text" id="share-target-user" placeholder="e.g., user2">
+            <label for="share-access" class="block text-sm font-medium text-gray-300 mt-4">Access Level</label>
+            <select id="share-access" class="w-full p-2 mt-1 rounded-lg bg-gray-900 border border-gray-600 text-white">
                 <option value="view">View Access</option>
                 <option value="edit">Edit Access</option>
             </select>
+            <button class="w-full mt-6 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg" onclick="submitShare()">Share File</button>
+            <pre id="share-status" class="mt-2 text-xs"></pre>
+        </div>
+    </div>
+
+    <!-- EDIT MODAL (Hidden) -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('editModal')">&times;</span>
+            <h3 class="text-xl font-semibold mb-4">Upload New Version</h3>
+            <p class="text-sm mb-2 text-gray-300">Editing: <strong id="edit-filename"></strong></p>
+            <input type="hidden" id="edit-file-id">
+            <input type="hidden" id="edit-user-id">
             
-            <button class="w-full mt-6 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg" onclick="submitShare()">
-                Share File
-            </button>
-            <pre id="modal-share-status" class="mt-2 text-xs"></pre>
+            <label for="edit-file-input" class="block text-sm font-medium text-gray-300">Select new file version</label>
+            <input class="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600 mt-2" type="file" id="edit-file-input">
+            
+            <button class="w-full mt-6 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg" onclick="submitEdit()">Upload New Version</button>
+            <pre id="edit-status" class="mt-2 text-xs"></pre>
         </div>
     </div>
 
@@ -127,36 +122,51 @@
             try {
                 const response = await fetch(`${BASE_URL}/myfiles?user_id=${userId}`);
                 const data = await response.json();
-                
                 if (!response.ok) throw new Error(data.error);
-
                 if (data.length === 0) {
                     outputEl.innerHTML = `<span class="text-gray-500">You have no files.</span>`;
                     return;
                 }
                 
-                outputEl.innerHTML = ""; // Clear the "Loading..."
+                outputEl.innerHTML = ""; // Clear
                 
-                // Create an interactive card for each file
                 data.forEach(file => {
                     const canEdit = file.access === 'edit';
+                    const isLocked = file.locked_by_id !== null;
+                    const lockedByMe = file.locked_by_id === userId;
+
+                    let lockInfo = '';
+                    if (isLocked) {
+                        lockInfo = lockedByMe ? 
+                            '<span class="text-xs text-green-400">(Locked by You)</span>' : 
+                            `<span class="text-xs text-red-400">(Locked by ${file.locked_by_name})</span>`;
+                    }
                     
+                    let buttons = '';
+                    // Everyone with 'view' can download
+                    buttons += `<button title="Download" class="p-2 bg-green-600 hover:bg-green-700 rounded-lg" onclick="downloadFile(${userId}, ${file.file_id}, '${file.filename}')">DL</button>`;
+
+                    if (canEdit) {
+                        buttons += `<button title="Share" class="p-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg" onclick="openShareModal(${userId}, ${file.file_id}, '${file.filename}')">Share</button>`;
+                        
+                        if (isLocked) {
+                            if (lockedByMe) {
+                                buttons += `<button title="Upload New Version" class="p-2 bg-red-600 hover:bg-red-700 rounded-lg" onclick="openEditModal(${userId}, ${file.file_id}, '${file.filename}')">Edit</button>`;
+                                buttons += `<button title="Unlock" class="p-2 bg-gray-500 hover:bg-gray-600 rounded-lg" onclick="unlockFile(${userId}, ${file.file_id})">Unlock</button>`;
+                            }
+                        } else {
+                            buttons += `<button title="Lock to Edit" class="p-2 bg-purple-600 hover:bg-purple-700 rounded-lg" onclick="lockFile(${userId}, ${file.file_id})">Lock</button>`;
+                        }
+                    }
+
                     const fileCard = `
-                        <div class="bg-gray-700 p-3 rounded-lg flex items-center justify-between">
-                            <div>
-                                <div class="font-bold text-white">${file.filename}</div>
-                                <div class="text-xs text-gray-400">ID: ${file.file_id} | Access: ${file.access}</div>
-                            </div>
-                            <div class="flex space-x-2">
-                                <button title="Download" class="p-2 bg-green-600 hover:bg-green-700 rounded-lg" onclick="downloadFile(${userId}, ${file.file_id}, '${file.filename}')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                </button>
-                                
-                                ${canEdit ? `
-                                <button title="Share" class="p-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg" onclick="openShareModal(${userId}, ${file.file_id}, '${file.filename}')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-                                </button>
-                                ` : ''}
+                        <div class="bg-gray-700 p-3 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="font-bold text-white">${file.filename}</div>
+                                    <div class="text-xs text-gray-400">ID: ${file.file_id} | Access: ${file.access} ${lockInfo}</div>
+                                </div>
+                                <div class="flex space-x-2">${buttons}</div>
                             </div>
                         </div>
                     `;
@@ -168,126 +178,153 @@
             }
         }
 
-        // 2. Upload File Function (Slightly updated)
+        // 2. Upload File Function
         async function uploadFile(userId) {
             const fileInput = document.getElementById(`user${userId}-file-input`);
             const file = fileInput.files[0];
             const statusEl = document.getElementById(`user${userId}-upload-status`);
-
-            if (!file) {
-                log(statusEl.id, "Please select a file first.", true);
-                return;
-            }
+            if (!file) { log(statusEl.id, "Please select a file first.", true); return; }
             log(statusEl.id, `Uploading ${file.name}...`);
-            
             const formData = new FormData();
             formData.append('user_id', userId);
             formData.append('file', file);
-
             try {
                 const response = await fetch(`${BASE_URL}/upload`, { method: 'POST', body: formData });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error);
-                
                 log(statusEl.id, data);
-                listMyFiles(userId); // Refresh the file list
-                fileInput.value = ""; // Clear the input
-
+                listMyFiles(userId); fileInput.value = "";
             } catch (error) {
                 log(statusEl.id, `Error: ${error.message}`, true);
             }
         }
 
-        // 3. Download File Function (NEW!)
+        // 3. Download File Function
         async function downloadFile(userId, fileId, filename) {
             try {
                 const response = await fetch(`${BASE_URL}/download?user_id=${userId}&file_id=${fileId}`);
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error);
+                    const errorData = await response.json(); throw new Error(errorData.error);
                 }
-
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-
+                a.style.display = 'none'; a.href = url; a.download = filename;
+                document.body.appendChild(a); a.click();
+                window.URL.revokeObjectURL(url); document.body.removeChild(a);
             } catch (error) {
                 alert(`Error downloading file: ${error.message}`);
             }
         }
-        
-        // --- Modal Functions ---
-        
-        const modal = document.getElementById("shareModal");
 
-        function openShareModal(userId, fileId, filename) {
-            document.getElementById("modal-user-id").value = userId;
-            document.getElementById("modal-file-id").value = fileId;
-            document.getElementById("modal-filename").textContent = filename;
-            document.getElementById("modal-share-status").textContent = "";
-            document.getElementById("modal-share-target-user").value = "";
-            modal.style.display = "block";
+        // 4. Lock File Function
+        async function lockFile(userId, fileId) {
+            try {
+                const response = await fetch(`${BASE_URL}/lock`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, file_id: fileId })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error);
+                listMyFiles(1); listMyFiles(2); // Refresh both lists
+            } catch (error) {
+                alert(`Error locking file: ${error.message}`);
+            }
         }
 
-        function closeModal() {
-            modal.style.display = "none";
+        // 5. Unlock File Function
+        async function unlockFile(userId, fileId) {
+            try {
+                const response = await fetch(`${BASE_URL}/unlock`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, file_id: fileId })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error);
+                listMyFiles(1); listMyFiles(2); // Refresh both lists
+            } catch (error) {
+                alert(`Error unlocking file: ${error.message}`);
+            }
+        }
+
+        // --- Modal Functions ---
+        function openShareModal(userId, fileId, filename) {
+            document.getElementById("share-user-id").value = userId;
+            document.getElementById("share-file-id").value = fileId;
+            document.getElementById("share-filename").textContent = filename;
+            document.getElementById("share-status").textContent = "";
+            document.getElementById("share-target-user").value = "";
+            document.getElementById("shareModal").style.display = "block";
+        }
+
+        function openEditModal(userId, fileId, filename) {
+            document.getElementById("edit-user-id").value = userId;
+            document.getElementById("edit-file-id").value = fileId;
+            document.getElementById("edit-filename").textContent = filename;
+            document.getElementById("edit-status").textContent = "";
+            document.getElementById("edit-file-input").value = "";
+            document.getElementById("editModal").style.display = "block";
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
         }
 
         async function submitShare() {
-            const sharerId = document.getElementById("modal-user-id").value;
-            const fileId = document.getElementById("modal-file-id").value;
-            const targetUsername = document.getElementById("modal-share-target-user").value;
-            const accessLevel = document.getElementById("modal-share-access").value;
-            const statusEl = document.getElementById("modal-share-status");
-
-            if (!targetUsername) {
-                log(statusEl.id, "Please enter a target username.", true);
-                return;
-            }
-
+            const sharerId = document.getElementById("share-user-id").value;
+            const fileId = document.getElementById("share-file-id").value;
+            const targetUsername = document.getElementById("share-target-user").value;
+            const accessLevel = document.getElementById("share-access").value;
+            const statusEl = document.getElementById("share-status");
+            if (!targetUsername) { log(statusEl.id, "Please enter a target username.", true); return; }
             log(statusEl.id, `Sharing file ${fileId} with ${targetUsername}...`);
-
             try {
                 const response = await fetch(`${BASE_URL}/share`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        user_id: sharerId,
-                        file_id: fileId,
-                        target_username: targetUsername,
-                        access_level: accessLevel
-                    })
+                    body: JSON.stringify({ user_id: sharerId, file_id: fileId, target_username: targetUsername, access_level: accessLevel })
                 });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error);
-                
                 log(statusEl.id, data);
-                // Refresh both users' file lists
-                listMyFiles(1);
-                listMyFiles(2);
-                
-                setTimeout(closeModal, 1500); // Close modal on success
-
+                listMyFiles(1); listMyFiles(2);
+                setTimeout(() => closeModal('shareModal'), 1000);
             } catch (error) {
                 log(statusEl.id, `Error: ${error.message}`, true);
             }
         }
         
-        // We removed the 'Edit' form because our new UI would
-        // use a "Re-upload" button on the file card, which is more complex.
-        // For this project, 'Upload' and 'Share' are the key features.
-        
-        // Close modal if user clicks outside of it
+        async function submitEdit() {
+            const userId = document.getElementById("edit-user-id").value;
+            const fileId = document.getElementById("edit-file-id").value;
+            const fileInput = document.getElementById("edit-file-input");
+            const file = fileInput.files[0];
+            const statusEl = document.getElementById("edit-status");
+            if (!file) { log(statusEl.id, "Please select a new file version.", true); return; }
+            log(statusEl.id, `Uploading new version for file ${fileId}...`);
+            
+            const formData = new FormData();
+            formData.append('user_id', userId);
+            formData.append('file_id', fileId);
+            formData.append('file', file);
+
+            try {
+                const response = await fetch(`${BASE_URL}/edit`, { method: 'POST', body: formData });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error);
+                log(statusEl.id, data);
+                listMyFiles(1); listMyFiles(2);
+                setTimeout(() => closeModal('editModal'), 1000);
+            } catch (error) {
+                log(statusEl.id, `Error: ${error.message}`, true);
+            }
+        }
+
         window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
             }
         }
     </script>
