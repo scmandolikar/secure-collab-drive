@@ -115,7 +115,7 @@ This project is open source and available under the [MIT License](LICENSE).
 **Sakshath Mandolikar**
 - Email: scmandolikar@gmail.com
 - GitHub: [@scmandolikar](https://github.com/scmandolikar)
-- LinkedIn: [Sakshath Mandolikar](https://www.linkedin.com/in/sakshath-mandolikar-8432b8396)
+- LinkedIn: [Sakshath Mandolikar](https://www.linkedin.com/in/sushant-mandolikar-71a519256/)
 
 ---
 
